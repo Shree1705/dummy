@@ -22,14 +22,14 @@ pipeline {
         sh 'docker-compose push'
       }
     }
-  }
     stage('Run Container') {
-        steps {
-            script {
-                sh "docker-compose up -d"
-                }
-            }
+      steps {
+        script {
+          sh "docker-compose up -d"
+        }
+      }
     }
+  }
   post {
     always {
       sh 'docker logout'
