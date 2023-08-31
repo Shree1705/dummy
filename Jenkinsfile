@@ -12,21 +12,19 @@ pipeline {
         sh 'docker-compose build'
       }
     }
-    stage('Login') {
+    stage('Login to DockerHub') {
       steps {
         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
       }
     }
-    stage('Push') {
+    stage('Push to DockerHub') {
       steps {
         sh 'docker-compose push'
       }
     }
-    stage('Run Container') {
+    stage('Deploy with Docker Compose') {
       steps {
-        script {
-          sh "docker-compose up -d"
-        }
+        sh 'docker-compose up -d'
       }
     }
   }
