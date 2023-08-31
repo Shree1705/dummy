@@ -6,12 +6,12 @@ pipeline {
         DOCKERHUB_REPO = 'divanshreevatsa/jenkins_test_docker'
     }
 
-    stages {
-        stage('Clone Repository') {
-            steps {
-                checkout scm
-            }
-        }
+    // stages {
+    //     stage('Clone Repository') {
+    //         steps {
+    //             checkout scm
+    //         }
+    //     }
 
         stage('Build and Push Backend') {
             steps {
