@@ -7,12 +7,20 @@ pipeline {
     }
 
     stages {
+        stage('Clone Repository') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build and Push Backend') {
             steps {
                 dir('backend') {
-                    sh 'docker build -t $DOCKERHUB_REPO:backend .'
-                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                    sh 'docker push $DOCKERHUB_REPO:backend'
+                    checkout scm
+                    def imageTag = "backend-${BUILD_NUMBER}"
+                    sh "docker build -t ${DOCKERHUB_REPO}:${imageTag} ."
+                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                    sh "docker push ${DOCKERHUB_REPO}:${imageTag}"
                 }
             }
         }
@@ -20,17 +28,23 @@ pipeline {
         stage('Build and Push Frontend') {
             steps {
                 dir('frontend') {
-                    sh 'docker build -t $DOCKERHUB_REPO:frontend .'
-                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                    sh 'docker push $DOCKERHUB_REPO:frontend'
+                    checkout scm
+                    def imageTag = "frontend-${BUILD_NUMBER}"
+                    sh "docker build -t ${DOCKERHUB_REPO}:${imageTag} ."
+                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                    sh "docker push ${DOCKERHUB_REPO}:${imageTag}"
                 }
             }
         }
 
         stage('Deploy with Docker Compose') {
             steps {
-                sh 'docker-compose pull'  // Pull the images from Docker Hub
-                sh 'docker-compose up -d' // Run the containers
+                script {
+                    def backendImageTag = "backend-${BUILD_NUMBER}"
+                    def frontendImageTag = "frontend-${BUILD_NUMBER}"
+                    sh "docker-compose pull" // Pull the latest images from Docker Hub
+                    sh "docker-compose up -d" // Run the containers
+                }
             }
         }
     }
