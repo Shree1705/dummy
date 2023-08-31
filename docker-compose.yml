@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web:
-    image: divanshreevatsa/jenkins_test_docker # Assuming this is the Jenkins image you want to use
+    image: divanshreevatsa/jenkins_test_docker:latest # Assuming this is the Jenkins image you want to use
   backend:
     build:
       context: ./backend
