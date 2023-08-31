@@ -7,20 +7,16 @@ pipeline {
     }
 
     stages {
-        // stage('Clone Repository') {
-        //     steps {
-        //         checkout scm
-        //     }
-        // }
-
         stage('Build and Push Backend') {
             steps {
                 dir('backend') {
                     checkout scm
-                    def imageTag = "backend-${BUILD_NUMBER}"
-                    sh "docker build -t ${DOCKERHUB_REPO}:${imageTag} ."
-                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
-                    sh "docker push ${DOCKERHUB_REPO}:${imageTag}"
+                    script {
+                        def imageTag = "backend-${BUILD_NUMBER}"
+                        sh "docker build -t ${DOCKERHUB_REPO}:${imageTag} ."
+                        sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                        sh "docker push ${DOCKERHUB_REPO}:${imageTag}"
+                    }
                 }
             }
         }
@@ -29,10 +25,12 @@ pipeline {
             steps {
                 dir('frontend') {
                     checkout scm
-                    def imageTag = "frontend-${BUILD_NUMBER}"
-                    sh "docker build -t ${DOCKERHUB_REPO}:${imageTag} ."
-                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
-                    sh "docker push ${DOCKERHUB_REPO}:${imageTag}"
+                    script {
+                        def imageTag = "frontend-${BUILD_NUMBER}"
+                        sh "docker build -t ${DOCKERHUB_REPO}:${imageTag} ."
+                        sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                        sh "docker push ${DOCKERHUB_REPO}:${imageTag}"
+                    }
                 }
             }
         }
