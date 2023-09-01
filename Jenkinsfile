@@ -138,7 +138,7 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker_login')
-        DOCKERHUB_REPO = 'divanshreevatsa/jenkins_test_docker'
+        DOCKERHUB_REPO = 'lavakumar7619/hotel_ease'
     }
 
     stages {
