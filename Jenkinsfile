@@ -152,14 +152,15 @@ pipeline {
                     dir('backend') {
                         sh "docker build -t ${DOCKERHUB_REPO}:${backendImageTag} ."
                     }
+                    // Authenticate and push images
+                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+                    sh "docker push ${DOCKERHUB_REPO}:${backendImageTag}"
                     
                     dir('frontend') {
                         sh "docker build -t ${DOCKERHUB_REPO}:${frontendImageTag} ."
                     }
                     
-                    // Authenticate and push images
-                    sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
-                    sh "docker push ${DOCKERHUB_REPO}:${backendImageTag}"
+                   
                     sh "docker push ${DOCKERHUB_REPO}:${frontendImageTag}"
                 }
             }
